@@ -1,10 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { Container, TextField, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Select, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { BDtoReact } from './components/parcers';
 
 const estados = [
     'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
 ];
+
+const darkTheme = createTheme({
+    palette: {
+        mode: 'dark',
+        background: {
+            default: '#181818',
+            paper: '#232323',
+        },
+        primary: {
+            main: '#90caf9',
+        },
+        secondary: {
+            main: '#f48fb1',
+        },
+    },
+});
 
 function ProcessoForm({ open, onClose, onSave, initialData }) {
     const [form, setForm] = React.useState(
@@ -166,81 +183,94 @@ export default function App() {
         setOpen(true);
     };
 
-        const handleDelete = async (idx) => {
-            // Remove the processo from the local state
-            setProcessos(processos.filter((_, i) => i !== idx));
-            // Remove from backend if it exists
-            const processo = processos[idx];
-            if (processo && processo.processoID) {
-                const id = processo.processoID;
-                try {
-                    await fetch(`http://localhost:3001/api/posts/${id}`, {
-                        method: 'DELETE'
-                    });
-                } catch (error) {
-                    console.log(error);
-                }
+    const handleDelete = async (idx) => {
+        // Remove the processo from the local state
+        setProcessos(processos.filter((_, i) => i !== idx));
+        // Remove from backend if it exists
+        const processo = processos[idx];
+        if (processo && processo.processoID) {
+            const id = processo.processoID;
+            try {
+                await fetch(`http://localhost:3001/api/posts/${id}`, {
+                    method: 'DELETE'
+                });
+            } catch (error) {
+                console.log(error);
             }
-        };
-    
-        const handleSave = async (data) => {
-            if (editIndex !== null) {
-                // Editar: enviar PUT para o backend
-                const processo = processos[editIndex];
-                const id = processo.processoID;
-                try {
-                    await fetch(`http://localhost:3001/api/posts/${id}`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            Advogado: data.advogado,
-                            Cliente: data.cliente,
-                            DataDeAbertura: data.dataAbertura,
-                            Descrição: data.descricao,
-                            NProcesso: data.numero,
-                            UFdoProcesso: data.uf,
-                            processoID: data.processoID
-                        })
-                    });
-                    setProcessos(processos.map((p, i) => (i === editIndex ? { ...data, processoID: id } : p)));
-                } catch (error) {
-                    console.log(error);
-                }
-            } else {
-                // Criar novo: enviar POST para o backend
-                try {
-                    const response = await fetch('http://localhost:3001/api/posts', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            Advogado: data.advogado,
-                            Cliente: data.cliente,
-                            DataDeAbertura: data.dataAbertura,
-                            Descrição: data.descricao,
-                            NProcesso: data.numero,
-                            UFdoProcesso: data.uf,
-                            processoID: data.processoID
-                        })
-                    });
-                    const result = await response.json();
-                    setProcessos([...processos, { ...data, processoID: result.id }]);
-                } catch (error) {
-                    console.log(error);
-                }
+        }
+    };
+
+    const handleSave = async (data) => {
+        if (editIndex !== null) {
+            // Editar: enviar PUT para o backend
+            const processo = processos[editIndex];
+            const id = processo.processoID;
+            try {
+                await fetch(`http://localhost:3001/api/posts/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        Advogado: data.advogado,
+                        Cliente: data.cliente,
+                        DataDeAbertura: data.dataAbertura,
+                        Descrição: data.descricao,
+                        NProcesso: data.numero,
+                        UFdoProcesso: data.uf,
+                        processoID: data.processoID
+                    })
+                });
+                setProcessos(processos.map((p, i) => (i === editIndex ? { ...data, processoID: id } : p)));
+            } catch (error) {
+                console.log(error);
             }
-            setOpen(false);
-            setLastUF(data.uf);
-            setShowConfirm(true);
-        };
-    
-        const handleVoltar = () => {
-            setShowConfirm(false);
-        };
-    
-        return (
-            <Container maxWidth="md" sx={{ mt: 4 }}>
+            setOpen(false); // Fecha o form após edição
+            // NÃO exibe o Dialog de confirmação após edição
+        } else {
+            // Criar novo: enviar POST para o backend
+            try {
+                const response = await fetch('http://localhost:3001/api/posts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        Advogado: data.advogado,
+                        Cliente: data.cliente,
+                        DataDeAbertura: data.dataAbertura,
+                        Descrição: data.descricao,
+                        NProcesso: data.numero,
+                        UFdoProcesso: data.uf,
+                        processoID: data.processoID
+                    })
+                });
+                const result = await response.json();
+                setProcessos([...processos, { ...data, processoID: result.id }]);
+                setOpen(false);
+                setLastUF(data.uf);
+                setShowConfirm(true); // Exibe o Dialog de confirmação apenas após criação
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    };
+
+    const handleVoltar = () => {
+        setShowConfirm(false);
+    };
+
+    return (
+        <ThemeProvider theme={darkTheme}>
+            <Container
+                sx={{
+                    paddingTop: 0.01,
+                    paddingBottom: 4,
+                    mt: 6,
+                    mb: 6,
+                    backgroundColor: 'background.default',
+                    color: 'text.primary',
+                    borderRadius: 2,
+                }}
+            >
                 <h2>Cadastro de Processos</h2>
-                <Button variant="contained" color="primary" onClick={handleAdd} sx={{ mb: 2 }}>
+                <Button variant="contained" color="primary" onClick={handleAdd} sx={{ mb: 4 }}>
                     Novo Processo
                 </Button>
                 <ProcessoForm
@@ -273,8 +303,8 @@ export default function App() {
                                     <TableCell>{proc.advogado}</TableCell>
                                     <TableCell>{proc.uf}</TableCell>
                                     <TableCell>
-                                        <Button size="small" onClick={() => handleEdit(idx)}>Editar</Button>
-                                        <Button size="small" color="error" onClick={() => handleDelete(idx)}>Remover</Button>
+                                        <Button sx={{ border: 1, marginRight: 1 }} size="small" onClick={() => handleEdit(idx)}>Editar</Button>
+                                        <Button sx={{ border: 1 }} size="small" color="error" onClick={() => handleDelete(idx)}>Remover</Button>
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -282,5 +312,6 @@ export default function App() {
                     </Table>
                 </TableContainer>
             </Container>
-        );
-    }
+        </ThemeProvider>
+    );
+}
