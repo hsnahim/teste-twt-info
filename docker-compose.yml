@@ -1,0 +1,38 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    environment:
+      DATABASE_HOST: mysql
+      DATABASE_USER: twt-user
+      DATABASE_PASSWORD: Alfa123#
+      DATABASE_NAME: twt
+      DATABASE_PORT: 3306
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: twt
+      MYSQL_USER: twt-user
+      MYSQL_PASSWORD: Alfa123#
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+      - ./CREATE_TABLE_Prossesos.sql:/docker-entrypoint-initdb.d/init.sql
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend

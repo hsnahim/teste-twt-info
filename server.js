@@ -37,10 +37,10 @@ app.get('/api/posts', async (req, res) => {
 app.post('/api/posts', async (req, res) => {
     try {
         const db = await getConnection();
-        const { Advogado, Cliente, DataDeAbertura, Descrição, NProcesso, UFdoProcesso } = req.body;
+        const { Advogado, Cliente, DataDeAbertura, Descricao, NProcesso, UFdoProcesso } = req.body;
         const [result] = await db.query(
-            'INSERT INTO Prossesos (Advogado, Cliente, DataDeAbertura, `Descrição`, NProcesso, UFdoProcesso) VALUES (?, ?, ?, ?, ?, ?)',
-            [Advogado, Cliente, DataDeAbertura, Descrição, NProcesso, UFdoProcesso]
+            'INSERT INTO Prossesos (Advogado, Cliente, DataDeAbertura, Descricao, NProcesso, UFdoProcesso) VALUES (?, ?, ?, ?, ?, ?)',
+            [Advogado, Cliente, DataDeAbertura, Descricao, NProcesso, UFdoProcesso]
         );
         res.json({ success: true, id: result.insertId });
     } catch (err) {
@@ -53,11 +53,11 @@ app.post('/api/posts', async (req, res) => {
 app.put('/api/posts/:id', async (req, res) => {
     try {
         const db = await getConnection();
-        const { Advogado, Cliente, DataDeAbertura, Descrição, NProcesso, UFdoProcesso } = req.body;
+        const { Advogado, Cliente, DataDeAbertura, Descricao, NProcesso, UFdoProcesso } = req.body;
         const { id } = req.params;
         const [result] = await db.query(
-            'UPDATE Prossesos SET Advogado=?, Cliente=?, DataDeAbertura=?, `Descrição`=?, NProcesso=?, UFdoProcesso=? WHERE processoID=?',
-            [Advogado, Cliente, DataDeAbertura, Descrição, NProcesso, UFdoProcesso, id]
+            'UPDATE Prossesos SET Advogado=?, Cliente=?, DataDeAbertura=?, Descricao=?, NProcesso=?, UFdoProcesso=? WHERE processoID=?',
+            [Advogado, Cliente, DataDeAbertura, Descricao, NProcesso, UFdoProcesso, id]
         );
         res.json({ success: result.affectedRows > 0 });
     } catch (err) {

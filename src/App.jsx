@@ -213,7 +213,7 @@ export default function App() {
                         Advogado: data.advogado,
                         Cliente: data.cliente,
                         DataDeAbertura: data.dataAbertura,
-                        Descrição: data.descricao,
+                        Descricao: data.descricao,
                         NProcesso: data.numero,
                         UFdoProcesso: data.uf,
                         processoID: data.processoID
@@ -235,7 +235,7 @@ export default function App() {
                         Advogado: data.advogado,
                         Cliente: data.cliente,
                         DataDeAbertura: data.dataAbertura,
-                        Descrição: data.descricao,
+                        Descricao: data.descricao,
                         NProcesso: data.numero,
                         UFdoProcesso: data.uf,
                         processoID: data.processoID
