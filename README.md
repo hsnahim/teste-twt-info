@@ -51,7 +51,3 @@ sudo docker-compose up --build
 ## Observações
 - O sistema diferencia processos de MG dos demais na confirmação de cadastro.
 - O código está comentado para facilitar manutenção e entendimento.
-
----
-
-Dúvidas ou sugestões? Abra uma issue ou entre em contato.
