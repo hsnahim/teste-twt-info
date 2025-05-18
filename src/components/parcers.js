@@ -1,4 +1,7 @@
+// Funções utilitárias para conversão de dados entre o backend e o frontend
+
 export function BDtoReact(data) {
+    // Converte dados do banco para o formato usado no React
     return {
         advogado: data.Advogado,
         cliente: data.Cliente,
@@ -11,6 +14,7 @@ export function BDtoReact(data) {
 }
 
 export function ReacttoBD(data) {
+    // Converte dados do React para o formato do banco
     return {
         Advogado: data.advogado,
         Cliente: data.cliente,
