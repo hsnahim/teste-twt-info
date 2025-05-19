@@ -26,7 +26,7 @@ services:
       - "3307:3306"
     volumes:
       - ./mysql-data:/var/lib/mysql
-      - ./CREATE_TABLE_Prossesos.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init_full.sql:/docker-entrypoint-initdb.d/init.sql
 
   frontend:
     build:
